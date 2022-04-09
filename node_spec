@@ -1,0 +1,109 @@
+root@Ubuntu-2004-focal-64-minimal ~ # fdisk -l
+Disk /dev/nvme1n1: 1.76 TiB, 1920383410176 bytes, 3750748848 sectors
+Disk model: SAMSUNG MZQL21T9HCJR-00A07
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 131072 bytes / 131072 bytes
+Disklabel type: dos
+Disk identifier: 0x98f3e632
+
+Device         Boot   Start        End    Sectors  Size Id Type
+/dev/nvme1n1p1         2048    8390655    8388608    4G fd Linux raid autodetect
+/dev/nvme1n1p2      8390656    9439231    1048576  512M fd Linux raid autodetect
+/dev/nvme1n1p3      9439232 3750746799 3741307568  1.8T fd Linux raid autodetect
+
+
+Disk /dev/md1: 511 MiB, 535822336 bytes, 1046528 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 131072 bytes / 131072 bytes
+
+
+Disk /dev/md0: 3.102 GiB, 4289724416 bytes, 8378368 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 131072 bytes / 131072 bytes
+
+
+Disk /dev/md2: 1.76 TiB, 1915414183936 bytes, 3741043328 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 131072 bytes / 131072 bytes
+
+
+Disk /dev/nvme0n1: 1.76 TiB, 1920383410176 bytes, 3750748848 sectors
+Disk model: SAMSUNG MZQL21T9HCJR-00A07
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 131072 bytes / 131072 bytes
+Disklabel type: dos
+Disk identifier: 0x464445c6
+
+Device         Boot   Start        End    Sectors  Size Id Type
+/dev/nvme0n1p1         2048    8390655    8388608    4G fd Linux raid autodetect
+/dev/nvme0n1p2      8390656    9439231    1048576  512M fd Linux raid autodetect
+/dev/nvme0n1p3      9439232 3750746799 3741307568  1.8T fd Linux raid autodetect
+root@Ubuntu-2004-focal-64-minimal ~ # df -h
+Filesystem      Size  Used Avail Use% Mounted on
+udev             63G     0   63G   0% /dev
+tmpfs            13G  928K   13G   1% /run
+/dev/md2        1.8T  1.3T  404G  76% /
+tmpfs            63G     0   63G   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs            63G     0   63G   0% /sys/fs/cgroup
+/dev/md1        485M   82M  378M  18% /boot
+tmpfs            13G     0   13G   0% /run/user/0
+
+root@Ubuntu-2004-focal-64-minimal ~ # parted -l
+Model: SAMSUNG MZQL21T9HCJR-00A07 (nvme)
+Disk /dev/nvme0n1: 1920GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  4296MB  4295MB  primary               raid
+ 2      4296MB  4833MB  537MB   primary               raid
+ 3      4833MB  1920GB  1916GB  primary               raid
+
+
+Model: Linux Software RAID Array (md)
+Disk /dev/md2: 1915GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  1915GB  1915GB  ext4
+
+
+Model: Linux Software RAID Array (md)
+Disk /dev/md0: 4290MB
+Sector size (logical/physical): 512B/4096B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  4290MB  4290MB  linux-swap(v1)
+
+
+Model: SAMSUNG MZQL21T9HCJR-00A07 (nvme)
+Disk /dev/nvme1n1: 1920GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  4296MB  4295MB  primary               raid
+ 2      4296MB  4833MB  537MB   primary               raid
+ 3      4833MB  1920GB  1916GB  primary               raid
+
+
+Model: Linux Software RAID Array (md)
+Disk /dev/md1: 536MB
+Sector size (logical/physical): 512B/4096B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End    Size   File system  Flags
+ 1      0.00B  536MB  536MB  ext3
