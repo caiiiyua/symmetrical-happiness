@@ -7,3 +7,6 @@ typechain
 #Hardhat files
 cache
 artifacts
+
+config.ts
+nohup.out
