@@ -97,16 +97,16 @@ async function main() {
     provider.on('pending', async (txn) => {
         getTransaction(txn).then((transaction) => {
             if (transaction == null) {
-                // console.log("=====================================")
+                console.log("=====================================")
                 return
             }
             if (transaction.to?.toUpperCase() === "0x22d4c35A4f2B229A928b1b569b2f60225976426A".toUpperCase() ){
             // && transaction.from?.toUpperCase() === "0x3316BcBfCfc36A8a8551af4371f033223d9756B0".toUpperCase()) {
                 console.log(transaction, transaction.gasPrice)
-                // const gasPrice = transaction.gasPrice!!
-                // const maxFeePerGas = transaction.maxFeePerGas!!
-                // const maxPriorityFeePerGas = transaction.maxPriorityFeePerGas!!
-                // mintNew(wuContract, 1, gasPrice, maxFeePerGas, maxPriorityFeePerGas)
+                const gasPrice = transaction.gasPrice!!
+                const maxFeePerGas = transaction.maxFeePerGas!!
+                const maxPriorityFeePerGas = transaction.maxPriorityFeePerGas!!
+                mintNew(wuContract, 1, gasPrice, maxFeePerGas, maxPriorityFeePerGas)
             }
         })
     })
