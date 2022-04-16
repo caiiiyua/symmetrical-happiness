@@ -13,7 +13,7 @@ dotenv.config();
 // const provider = new providers.JsonRpcProvider(process.env.RPC_ENDPOINT)
 // const provider = new providers.WebSocketProvider("wss://eth-mainnet.alchemyapi.io/v2/AEFszc8KBUGqG7Hux5_yMn0I7XRnZyv0")
 // const provider = new providers.JsonRpcProvider("http://localhost:8545")
-const provider = new providers.WebSocketProvider("http://localhost:8546")
+const provider = new providers.WebSocketProvider("http://192.168.1.96:8546")
 
 const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
 const smartWallet = new NonceManager(wallet)
@@ -56,6 +56,11 @@ async function main() {
     for (let index = 0; index < 25; index++) {
         console.log(index, await provider.getStorageAt("0xDD7e26849F031562D4Def5F06598A270eCCb9460", index))
     }
+
+    provider.on("block", async (blockNumber) => {
+        const block = await provider.getBlock(blockNumber)
+        console.log(block)
+    })
 
     // const mintData = "0xa0712d68000000000000000000000000000000000000000000000000000000000000001E"
 

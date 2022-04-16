@@ -1,11 +1,10 @@
 import { BigNumber, Contract, ethers, providers, Wallet } from "ethers";
 import * as dotenv from "dotenv";
-import { FormatTypes, Interface, ParamType } from "@ethersproject/abi";
-import { hexValue } from "@ethersproject/bytes";
-import { CONTRACT_ABI, XINXIN_ABI } from "./abi";
-import { WUContract__factory } from "../typechain";
+import { FormatTypes, Interface } from "@ethersproject/abi";
 import { PRIVATE_KEY } from '../config';
 import { NonceManager } from "@ethersproject/experimental";
+import { OGPASS__factory } from "../typechain";
+import { FlashbotsBundleProvider } from "@flashbots/ethers-provider-bundle";
 
 dotenv.config();
 
@@ -15,51 +14,89 @@ dotenv.config();
 // const provider = new providers.JsonRpcProvider("http://localhost:8545")
 const provider = new providers.WebSocketProvider("http://localhost:8546")
 
+const NFT_CONTRACT_ABI = OGPASS__factory._abi
 const NFT_CONTRACT_ADDRESS = ""
 const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
 const smartWallet = new NonceManager(wallet)
 
+const authSigner = Wallet.createRandom();
+
+async function mintNew(contract: Contract, amount: number, price: number, gasPrice: BigNumber, maxFeePerGas: BigNumber, maxPriorityFeePerGas: BigNumber) {
+    const unsignedTx = await contract.populateTransaction.mintToken(amount, null, {
+        value: ethers.utils.parseEther((price * amount).toString()), //sending one ether  
+        gasLimit: 240000 * amount, //optional
+        maxFeePerGas: maxFeePerGas,
+        maxPriorityFeePerGas: maxPriorityFeePerGas
+    })
+    const transactionBundle = [
+        {
+            signer: wallet, // ethers signer
+            transaction: unsignedTx // ethers populated transaction object
+        }
+    ]
+    return transactionBundle
+}
 async function getTransaction(txn: string) {
     return provider.getTransaction(txn)
 }
 
-async function mintNew(contract: Contract, amount: number, price: number, gasPrice: BigNumber, maxFeePerGas: BigNumber, maxPriorityFeePerGas: BigNumber) {
-    const txn = await contract.mint(amount, {
-        value: ethers.utils.parseEther((price * amount).toString()), //sending one ether  
-        gasLimit: 100000 * amount, //optional
-        maxFeePerGas: maxFeePerGas,
-        maxPriorityFeePerGas: maxPriorityFeePerGas
-    })
-    console.log(await provider.waitForTransaction(txn.hash))
-}
-
-var paused = true
-var saleActived = false
-
-var purchased = false
+const TARGET_BLOCK = 14596875
+const PRIORITY_FEE = ethers.utils.parseUnits("777", "gwei")
 
 async function main() {
 
-    const nftContract = new Contract(NFT_CONTRACT_ADDRESS, XINXIN_ABI, wallet);
-    const iface = new Interface(XINXIN_ABI);
+    const nftContract = new Contract(NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, wallet);
+    const iface = new Interface(NFT_CONTRACT_ABI);
     console.log(iface.format(FormatTypes.minimal));
 
     const nft = {
         name: await nftContract.name(),
-        maxSupply: ethers.utils.formatUnits(await nftContract.maxSupply(), 0),
+        maxSupply: 100,
         totalSupply: ethers.utils.formatUnits(await nftContract.totalSupply(), 0),
-        price: parseFloat(ethers.utils.formatUnits(await nftContract.PRESALE_ETH_PRICE(), 18)),
-        maxPerTx: parseInt(ethers.utils.formatUnits(await nftContract.MAX_MINT_COUNT(), 0))
+        price: 1.8,
+        maxPerTx: parseInt(ethers.utils.formatUnits(await nftContract.getTransactionCappedByMode(), 0))
     }
 
     console.log(nft)
 
     provider.on("block", async (blockNumber) => {
-        // const feeData = await provider.getFeeData()
-        // console.log(ethers.utils.formatUnits(feeData.maxFeePerGas!!, 'gwei'), ethers.utils.formatUnits(feeData.maxPriorityFeePerGas!!, 'gwei'))
-        paused = await nftContract.paused()
-        saleActived = await nftContract.saleActive()
-        console.log("paused: ", paused, " saveActived: ", saleActived, ethers.utils.parseEther((nft.price * nft.maxPerTx).toString()))
+        const block = await provider.getBlock(blockNumber)
+        console.log(blockNumber)
+        // // const feeData = await provider.getFeeData()
+        // // console.log(ethers.utils.formatUnits(feeData.maxFeePerGas!!, 'gwei'), ethers.utils.formatUnits(feeData.maxPriorityFeePerGas!!, 'gwei'))
+        // const maxPerTx = await nftContract.getTransactionCappedByMode()
+        // const startPublicSaleBlock = await nftContract.startPublicSaleBlock()
+        // console.log("block: ", blockNumber, " maxPerTx: ", maxPerTx, " startPublicSaleBlock: ", startPublicSaleBlock, " still ", TARGET_BLOCK - blockNumber, " blocks to go")
+        // if (blockNumber = TARGET_BLOCK - 1) {
+        //     console.log("Get ready to mint.....")
+        //     // Flashbots provider requires passing in a standard provider
+        //     const flashbotsProvider = await FlashbotsBundleProvider.create(
+        //         provider, // a normal ethers.js provider, to perform gas estimiations and nonce lookups
+        //         authSigner // ethers.js signer wallet, only for signing request payloads, not transactions
+        //     )
+        //     const maxBaseFeeInFutureBlock = FlashbotsBundleProvider.getBaseFeeInNextBlock(block.baseFeePerGas!!, block.gasUsed, block.gasLimit)
+        //     const unsignedTx = await nftContract.populateTransaction.mintToken(1, null, {
+        //         value: ethers.utils.parseEther((1.8).toString()), //sending one ether  
+        //         gasLimit: 240000 * 1, //optional
+        //         maxFeePerGas: PRIORITY_FEE.add(maxBaseFeeInFutureBlock),
+        //         maxPriorityFeePerGas: PRIORITY_FEE
+        //     })
+        //     const transactionBundle = [
+        //         {
+        //             signer: wallet, // ethers signer
+        //             transaction: unsignedTx // ethers populated transaction object
+        //         }
+        //     ]
+        //     const signedTransactions = await flashbotsProvider.signBundle(transactionBundle)
+        //     const simulation = await flashbotsProvider.simulate(signedTransactions, TARGET_BLOCK)
+        //     console.log(JSON.stringify(simulation, null, 2))
+
+        //     // const flashbotsTransactionResponse = await flashbotsProvider.sendBundle(
+        //     //     transactionBundle,
+        //     //     TARGET_BLOCK,
+        //     // )
+        //     // console.log(JSON.stringify(flashbotsTransactionResponse, null, 2))
+        // }
     })
 
     provider.on('pending', async (txn) => {
@@ -68,45 +105,11 @@ async function main() {
                 // console.log("=====================================")
                 return
             }
-            if (transaction.to?.toUpperCase() === NFT_CONTRACT_ADDRESS.toUpperCase() ) {
-                // console.log(transaction)
-                try {
-                    const tx = iface.parseTransaction(transaction)
-                    console.log(tx)
-                    if (tx.name == "setSaleActive") {
-                        if (purchased) return
-                        const gasPrice = transaction.gasPrice!!
-                        const maxFeePerGas = transaction.maxFeePerGas!!
-                        const maxPriorityFeePerGas = transaction.maxPriorityFeePerGas!!
-                        for (let index = 0; index < 2; index++) {
-                            mintNew(nftContract, nft.maxPerTx, nft.price, gasPrice, maxFeePerGas, maxPriorityFeePerGas)
-                        }
-                        purchased = true
-                    }
-                } catch (error) {
-                    console.error(error)
-                }
-                
+            if (transaction.data.startsWith("0x95d0f231")) {
+                console.log(transaction)
             }
         })
     })
-
-    // // This filter could also be generated with the Contract or
-    // // Interface API. If address is not specified, any address
-    // // matches and if topics is not specified, any log matches
-    // const filter = {
-    //     address: "0xBEE7Cb80DFD21a9eAAe714208F361601F68eB746",
-    //     topics: [
-
-    //     ]
-    // }
-    // provider.on(filter, async (log, event) => {
-    //     console.log("filter:", log, event)
-    //     if (log.topics[0] == "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa") {
-    //         //Do mint
-    //         await mintNew(wuContract, 100, ethers.utils.parseUnits("38", "gwei"), ethers.utils.parseUnits("77", "gwei"), ethers.utils.parseUnits("1.5", "gwei"))
-    //     }
-    // })
 }
 
 main().then(console.log)
