@@ -23,9 +23,9 @@ async function getTransaction(txn: string) {
     return provider.getTransaction(txn)
 }
 
-const TRX_DATA = "0x1249c58b"
+const TRX_DATA = "0xa0712d680000000000000000000000000000000000000000000000000000000000000002"
 
-const NFT_CONTRACT_ADDRESS = "0xCCB9D89e0F77Df3618EEC9f6BF899Be3B5561A89"
+const NFT_CONTRACT_ADDRESS = "0xcc1b98ff5642a0c14054cde04ff34274aa8967ea"
 const NFT_PRICE = 0
 const NFT_CONTRACT_ABI = HAKI_ABI
 const MAX_TRX_COUNT = 1
@@ -46,7 +46,7 @@ async function mintWithData(feeData: FeeData) {
         gasLimit: GAS_LIMIT * MAX_AMOUNT_PER_TRX,
         chainId: 1
       })
-    console.log((await txn).wait())
+    console.log(await txn)
 }
 
 async function mint(contract: Contract, feeData: FeeData) {
