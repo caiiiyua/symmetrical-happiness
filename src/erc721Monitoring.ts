@@ -71,8 +71,13 @@ async function main() {
         // Emitted any token is sent TO either address
         console.log(log, "========", event)
         const nftContract = new Contract(log.address, ERC_721_ABI, provider);
-        const name = await nftContract.name()
-        console.log("NFT contract ", name, " has been deployed at ", log.address)
+        try {
+            const name = await nftContract.name()
+            console.log("NFT contract ", name, " has been deployed at ", log.address)
+        } catch (error) {
+            console.error(error)
+        }
+       
         // const txn = await provider.getTransaction(log.transactionHash)
         // console.log(txn)
         // if (txn.data.startsWith("0xa0712d6800000000000000000000000000000000000000000000000000000000000")
