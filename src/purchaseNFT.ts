@@ -4,7 +4,7 @@ import { FormatTypes, Interface, ParamType } from "@ethersproject/abi";
 import { hexValue } from "@ethersproject/bytes";
 import { CONTRACT_ABI, HAKI_ABI, KREEPY_CLUB_ABI } from "./abi";
 import { WUContract__factory } from "../typechain";
-import { PRIVATE_KEY } from '../config';
+import { PRIVATE_KEY3, PRIVATE_KEY2, PRIVATE_KEY } from '../config';
 import { NonceManager } from "@ethersproject/experimental";
 import { FeeData } from "@ethersproject/abstract-provider";
 
@@ -23,15 +23,16 @@ async function getTransaction(txn: string) {
     return provider.getTransaction(txn)
 }
 
-const TRX_DATA = "0xa0712d680000000000000000000000000000000000000000000000000000000000000002"
+// const TRX_DATA = "0xa0712d68000000000000000000000000000000000000000000000000000000000000000a"
+const TRX_DATA = "0xb774cf9000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
 
-const NFT_CONTRACT_ADDRESS = "0xcc1b98ff5642a0c14054cde04ff34274aa8967ea"
-const NFT_PRICE = 0
+const NFT_CONTRACT_ADDRESS = "0x28AC3cf5E3313f6DE9E9C31439b32dBD5b6aAB19"
 const NFT_CONTRACT_ABI = HAKI_ABI
 const MAX_TRX_COUNT = 1
-const MAX_AMOUNT_PER_TRX = 7
+const MAX_AMOUNT_PER_TRX = 3
+const NFT_PRICE = 0 //******************************* CHECK VALUE!!!
 
-const GAS_LIMIT = 120000
+const GAS_LIMIT = 140000
 const MAX_PEE_PER_GAS = ethers.utils.parseUnits("34", "gwei")
 const MAX_PRIORITY_PER_GAS = ethers.utils.parseUnits("2", "gwei")
 
@@ -43,7 +44,7 @@ async function mintWithData(feeData: FeeData) {
         value: ethers.utils.parseEther((NFT_PRICE * MAX_AMOUNT_PER_TRX).toString()),
         maxFeePerGas: feeData.maxFeePerGas ?? MAX_PEE_PER_GAS,
         maxPriorityFeePerGas: feeData.maxPriorityFeePerGas ?? MAX_PRIORITY_PER_GAS,
-        gasLimit: GAS_LIMIT * MAX_AMOUNT_PER_TRX,
+        gasLimit: GAS_LIMIT,
         chainId: 1
       })
     console.log(await txn)
