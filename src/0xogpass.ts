@@ -11,10 +11,11 @@ dotenv.config();
 // const provider = new providers.WebSocketProvider("wss://wild-winter-star.bsc.quiknode.pro/79cdb8a970efff353a2ddf59a7067e23c582b5a2/");
 const walletProvider = new providers.JsonRpcProvider("https://eth-mainnet.alchemyapi.io/v2/zNXb2wL-bHl57-13FfTiL9XSH-m88C4M")
 // const provider = new providers.WebSocketProvider("wss://eth-mainnet.alchemyapi.io/v2/AEFszc8KBUGqG7Hux5_yMn0I7XRnZyv0")
-// const provider = new providers.JsonRpcProvider("http://localhost:8545")
+// const walletProvider = new providers.JsonRpcProvider("https://rpc.ankr.com/eth")
+const provider = new providers.JsonRpcProvider("http://localhost:8545")
 // const provider = new providers.WebSocketProvider("http://localhost:8546", 1)
 
-const provider = walletProvider
+// const provider = walletProvider
 
 const FLASHBOT_RPC_ENDPOINT = "https://relay.flashbots.net"
 const NFT_CONTRACT_ABI = OGPASS__factory.abi
@@ -30,11 +31,11 @@ async function getTransaction(txn: string) {
 }
 
 const NFT_PRICE = "1.8"
-const START_BLOCKS_AHEAD = 5
+const START_BLOCKS_AHEAD = 3
 const STEP = 1661
 var TARGET_BLOCK = 14605180
 // const PRIORITY_FEE = ethers.utils.parseUnits("11666.6", "gwei")
-const PRIORITY_FEE = ethers.utils.parseUnits("11111.1", "gwei")
+const PRIORITY_FEE = ethers.utils.parseUnits("6666.6", "gwei")
 var purchased = false
 
 async function main() {
@@ -62,7 +63,7 @@ async function main() {
     var nextSequenceBlock = parseInt(await nftContract.nextSubsequentSale())
 
     provider.on("block", async (blockNumber) => {
-        const block = await provider.getBlock(blockNumber)
+        // const block = await provider.getBlock(blockNumber)
         // nextSequenceBlock = blockNumber + 1
         // console.log(block)
         // const feeData = await provider.getFeeData()
