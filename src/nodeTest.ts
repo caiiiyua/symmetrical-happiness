@@ -51,16 +51,16 @@ async function mintNew(contract: Contract, amount: number, gasPrice: BigNumber, 
 
 async function main() {
 
-    const wuContract = new Contract("0xDD7e26849F031562D4Def5F06598A270eCCb9460", WUContract__factory.abi, wallet);
+    // const wuContract = new Contract("0xDD7e26849F031562D4Def5F06598A270eCCb9460", WUContract__factory.abi, wallet);
 
-    for (let index = 0; index < 25; index++) {
-        console.log(index, await provider.getStorageAt("0xDD7e26849F031562D4Def5F06598A270eCCb9460", index))
-    }
+    // for (let index = 0; index < 25; index++) {
+    //     console.log(index, await provider.getStorageAt("0xDD7e26849F031562D4Def5F06598A270eCCb9460", index))
+    // }
 
-    provider.on("block", async (blockNumber) => {
-        const block = await provider.getBlock(blockNumber)
-        console.log(block)
-    })
+    // provider.on("block", async (blockNumber) => {
+    //     const block = await provider.getBlock(blockNumber)
+    //     console.log(block)
+    // })
 
     // const mintData = "0xa0712d68000000000000000000000000000000000000000000000000000000000000001E"
 
@@ -91,22 +91,23 @@ async function main() {
     // const result = abiCoder.decode(["uint256", ParamType.fromString("address[]"), "address", "uint256"], '0x' + data4.substring(10));
     // console.log(result)
 
-    // provider.on('pending', async (txn) => {
-    //     getTransaction(txn).then((transaction) => {
-    //         if (transaction == null) {
-    //             // console.log("=====================================")
-    //             return
-    //         }
-    //         if (transaction.to?.toUpperCase() === "0xBEE7Cb80DFD21a9eAAe714208F361601F68eB746".toUpperCase() ){
-    //         // && transaction.from?.toUpperCase() === "0x3316BcBfCfc36A8a8551af4371f033223d9756B0".toUpperCase()) {
-    //             console.log(transaction, transaction.gasPrice)
-    //             const gasPrice = transaction.gasPrice!!
-    //             const maxFeePerGas = transaction.maxFeePerGas!!
-    //             const maxPriorityFeePerGas = transaction.maxPriorityFeePerGas!!
-    //             mintNew(wuContract, 1, gasPrice, maxFeePerGas, maxPriorityFeePerGas)
-    //         }
-    //     })
-    // })
+    provider.on('pending', async (txn) => {
+        getTransaction(txn).then((transaction) => {
+            if (transaction == null) {
+                // console.log("=====================================")
+                return
+            }
+            console.log(transaction)
+            // if (transaction.to?.toUpperCase() === "0xBEE7Cb80DFD21a9eAAe714208F361601F68eB746".toUpperCase() ){
+            // // && transaction.from?.toUpperCase() === "0x3316BcBfCfc36A8a8551af4371f033223d9756B0".toUpperCase()) {
+            //     console.log(transaction, transaction.gasPrice)
+            //     const gasPrice = transaction.gasPrice!!
+            //     const maxFeePerGas = transaction.maxFeePerGas!!
+            //     const maxPriorityFeePerGas = transaction.maxPriorityFeePerGas!!
+            //     mintNew(wuContract, 1, gasPrice, maxFeePerGas, maxPriorityFeePerGas)
+            // }
+        })
+    })
 
     // This filter could also be generated with the Contract or
     // Interface API. If address is not specified, any address

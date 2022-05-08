@@ -12,14 +12,22 @@ async function main() {
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
   // await hre.run('compile');
+  const GAS_PRICE = "40"
+  const GAS_LIMIT = 260000
+  const MAX_PEE_PER_GAS = ethers.utils.parseUnits(GAS_PRICE, "gwei")
+  const MAX_PRIORITY_PER_GAS = ethers.utils.parseUnits(GAS_PRICE, "gwei")
 
   // We get the contract to deploy
-  const Greeter = await ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const studioProfileFactory = await ethers.getContractFactory("StudioProfile");
+  const studioProfile = await studioProfileFactory.deploy()
+  // const studioProfile = await studioProfileFactory.deploy({
+  //   maxFeePerGas: MAX_PEE_PER_GAS,
+  //   maxPriorityFeePerGas: MAX_PRIORITY_PER_GAS
+  // });
 
-  await greeter.deployed();
+  await studioProfile.deployed();
 
-  console.log("Greeter deployed to:", greeter.address);
+  console.log("StudioProfile deployed to:", studioProfile.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
