@@ -1,22 +1,17 @@
 import { BigNumber, Contract, ethers, providers, Wallet } from "ethers";
 import * as dotenv from "dotenv";
-import { FormatTypes, Interface } from "@ethersproject/abi";
-import { PRIVATE_KEY, PRIVATE_KEY2 } from '../config';
+
+import { PRIVATE_KEY } from '../config';
 import { NonceManager } from "@ethersproject/experimental";
-import { OGPASS__factory } from "../typechain-types";
 import { FlashbotsBundleProvider } from "@flashbots/ethers-provider-bundle";
 
 dotenv.config();
 
-// const provider = new providers.WebSocketProvider("wss://wild-winter-star.bsc.quiknode.pro/79cdb8a970efff353a2ddf59a7067e23c582b5a2/");
-// const provider = new providers.JsonRpcProvider(process.env.RPC_ENDPOINT)
-// const provider = new providers.WebSocketProvider("wss://eth-mainnet.alchemyapi.io/v2/AEFszc8KBUGqG7Hux5_yMn0I7XRnZyv0")
-// const provider = new providers.JsonRpcProvider("http://localhost:8545")
-const provider = new providers.WebSocketProvider("http://localhost:8546")
-// const provider = new provider.IpcProvider("/media/caiiiyua/node/data-seed/geth.ipc")
+const provider = new providers.JsonRpcProvider(process.env.RPC_ENDPOINT)
+
 
 const FLASHBOT_RPC_ENDPOINT = "https://relay.flashbots.net"
-const wallet = new ethers.Wallet(PRIVATE_KEY2, provider);
+const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
 const smartWallet = new NonceManager(wallet)
 
 const authSigner = Wallet.createRandom();
